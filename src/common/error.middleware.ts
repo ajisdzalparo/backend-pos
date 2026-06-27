@@ -24,15 +24,27 @@ export const errorHandler = (
       case 'P2003': {
         const target = (err.meta?.target as string) || (err.meta?.field_name as string) || '';
         let relation = 'relation';
-        if (target.includes('category_id')) {
-          relation = 'Category';
-        } else if (target.includes('sub_category_id')) {
-          relation = 'Sub-category';
-        } else if (target.includes('tax_id')) {
-          relation = 'Tax';
-        } else if (target.includes('item_modifier_id')) {
-          relation = 'Item modifier';
+        
+        // Clean up raw database constraint names like "ms_product_category_id_fkey (index)"
+        const cleaned = target.replace(/_fkey.*/, '').replace(/^ms_/, '');
+        const parts = cleaned.split('_');
+
+        if (parts[parts.length - 1] === 'id') {
+          const lastThree = parts.slice(-3);
+          if (lastThree[0] === 'sub' && lastThree[1] === 'category') {
+            relation = 'Sub-category';
+          } else if (lastThree[0] === 'item' && lastThree[1] === 'modifier') {
+            relation = 'Item modifier';
+          } else if (lastThree[0] === 'bank' && lastThree[1] === 'type') {
+            relation = 'Bank type';
+          } else {
+            const word = parts[parts.length - 2];
+            relation = word ? word.charAt(0).toUpperCase() + word.slice(1) : 'relation';
+          }
+        } else {
+          relation = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
         }
+
         message = `Invalid relation: The referenced ${relation} does not exist.`;
         break;
       }
