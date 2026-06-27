@@ -1,0 +1,153 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tax {
+  id         String    @id @default(cuid())
+  name       String
+  rate       Float
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  products   Product[]
+
+  @@map("ms_tax")
+}
+
+model Category {
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  is_active     Boolean       @default(true)
+  created_at    DateTime      @default(now())
+  updated_at    DateTime      @updatedAt
+  deleted_at    DateTime?
+  products      Product[]
+  subCategories SubCategory[]
+
+  @@map("ms_category")
+}
+
+model SubCategory {
+  id          String    @id @default(cuid())
+  category_id String
+  name        String
+  description String?
+  is_active   Boolean   @default(true)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  deleted_at  DateTime?
+  products    Product[]
+  category    Category  @relation(fields: [category_id], references: [id])
+
+  @@map("ms_sub_category")
+}
+
+model Product {
+  id              String   @id @default(cuid())
+  image           String
+  sku             String
+  name            String
+  category_id     String
+  tax_id          String
+  sub_category_id String
+  base_price      Float
+  is_active       Boolean  @default(true)
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
+
+  category       Category      @relation(fields: [category_id], references: [id])
+  tax            Tax           @relation(fields: [tax_id], references: [id])
+  sub_category   SubCategory   @relation(fields: [sub_category_id], references: [id])
+  itemModifier   ItemModifier? @relation(fields: [itemModifierId], references: [id])
+  itemModifierId String?
+
+  @@map("ms_product")
+}
+
+model ItemModifier {
+  id         String    @id @default(cuid())
+  name       String
+  price      Float
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+  products   Product[]
+
+  @@map("ms_item_modifier")
+}
+
+model Table {
+  id         String   @id @default(cuid())
+  name       String
+  capacity   Int
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  @@map("ms_table")
+}
+
+model BookingChannel {
+  id         String   @id @default(cuid())
+  name       String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  @@map("ms_booking_channel")
+}
+
+model BankType {
+  id         String   @id @default(cuid())
+  name       String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+  banks      Bank[]
+
+  @@map("ms_bank_type")
+}
+
+model Bank {
+  id           String   @id @default(cuid())
+  name         String
+  bank_type_id String
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+  deleted_at   DateTime?
+  bank_type    BankType @relation(fields: [bank_type_id], references: [id])
+
+  @@map("ms_bank")
+}
+
+model PaymentMethod {
+  id         String   @id @default(cuid())
+  name       String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  deleted_at DateTime?
+
+  @@map("ms_payment_method")
+}
