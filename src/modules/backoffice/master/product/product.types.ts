@@ -8,7 +8,7 @@ export interface ProductCreateDto {
   tax_id: string;
   sub_category_id: string;
   base_price: number;
-  itemModifierId?: string | null;
+  item_modifier_id?: string | null;
 }
 
 export interface ProductListRequestDto extends ApiListRequest {
@@ -26,7 +26,7 @@ export interface ProductUpdateDto {
   sub_category_id?: string;
   base_price?: number;
   is_active?: boolean;
-  itemModifierId?: string | null;
+  item_modifier_id?: string | null;
 }
 
 export interface ProductGetAllDto {
@@ -59,7 +59,7 @@ export interface ProductResponseDto {
     id: string;
     name: string;
   };
-  itemModifier: {
+  item_modifier: {
     id: string;
     name: string;
     price: number;

@@ -11,7 +11,7 @@ export const ProductService = {
         category: true,
         tax: true,
         sub_category: true,
-        itemModifier: true,
+        item_modifier: true,
       }
     }) as unknown as Promise<ProductResponseDto>;
   },
@@ -55,7 +55,7 @@ export const ProductService = {
               name: true,
             }
           },
-          itemModifier: {
+          item_modifier: {
             select: {
               id: true,
               name: true,
@@ -106,7 +106,7 @@ export const ProductService = {
             name: true,
           }
         },
-        itemModifier: {
+        item_modifier: {
           select: {
             id: true,
             name: true,
@@ -141,7 +141,7 @@ export const ProductService = {
             name: true,
           }
         },
-        itemModifier: {
+        item_modifier: {
           select: {
             id: true,
             name: true,
@@ -169,7 +169,7 @@ export const ProductService = {
         category: true,
         tax: true,
         sub_category: true,
-        itemModifier: true,
+        item_modifier: true,
       }
     }) as unknown as Promise<ProductResponseDto>;
   },
@@ -193,7 +193,7 @@ export const ProductService = {
         category: true,
         tax: true,
         sub_category: true,
-        itemModifier: true,
+        item_modifier: true,
       }
     }) as unknown as Promise<ProductResponseDto>;
   },

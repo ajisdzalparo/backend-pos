@@ -71,11 +71,11 @@ model Product {
   created_at      DateTime @default(now())
   updated_at      DateTime @updatedAt
 
-  category       Category      @relation(fields: [category_id], references: [id])
-  tax            Tax           @relation(fields: [tax_id], references: [id])
-  sub_category   SubCategory   @relation(fields: [sub_category_id], references: [id])
-  itemModifier   ItemModifier? @relation(fields: [itemModifierId], references: [id])
-  itemModifierId String?
+  category         Category      @relation(fields: [category_id], references: [id])
+  tax              Tax           @relation(fields: [tax_id], references: [id])
+  sub_category     SubCategory   @relation(fields: [sub_category_id], references: [id])
+  item_modifier    ItemModifier? @relation(fields: [item_modifier_id], references: [id])
+  item_modifier_id String?
 
   @@map("ms_product")
 }
@@ -94,34 +94,34 @@ model ItemModifier {
 }
 
 model Table {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
   capacity   Int
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("ms_table")
 }
 
 model BookingChannel {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("ms_booking_channel")
 }
 
 model BankType {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
   banks      Bank[]
 
@@ -129,24 +129,24 @@ model BankType {
 }
 
 model Bank {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String
   bank_type_id String
-  is_active    Boolean  @default(true)
-  created_at   DateTime @default(now())
-  updated_at   DateTime @updatedAt
+  is_active    Boolean   @default(true)
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
   deleted_at   DateTime?
-  bank_type    BankType @relation(fields: [bank_type_id], references: [id])
+  bank_type    BankType  @relation(fields: [bank_type_id], references: [id])
 
   @@map("ms_bank")
 }
 
 model PaymentMethod {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  is_active  Boolean   @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("ms_payment_method")
