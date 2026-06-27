@@ -56,6 +56,11 @@ export const errorHandler = (
         message = `Invalid relation: The referenced ${relation} does not exist.`;
         break;
       }
+      case 'P2018': {
+        message = (err.meta?.details as string) || 'The required connected records were not found.';
+        statusCode = 400;
+        break;
+      }
       case 'P2025': {
         message = (err.meta?.cause as string) || 'Record to update or delete not found.';
         statusCode = 404;
