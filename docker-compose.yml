@@ -21,6 +21,26 @@ services:
     volumes:
       - redis_data:/data
 
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pos_backend_app
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - DATABASE_URL=postgresql://postgres:postgrespassword@db:5432/pos_db?schema=public
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=your_access_token_secret_key_change_me_in_production
+      - JWT_REFRESH_SECRET=your_refresh_token_secret_key_change_me_in_production
+      - JWT_EXPIRES_IN=15m
+      - JWT_REFRESH_EXPIRES_IN=7d
+    depends_on:
+      - db
+      - redis
+
 volumes:
   postgres_data:
   redis_data:
