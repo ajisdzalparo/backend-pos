@@ -26,23 +26,34 @@ export const errorHandler = (
         let relation = 'relation';
         
         // Clean up raw database constraint names like "ms_product_category_id_fkey (index)"
-        const cleaned = target.replace(/_fkey.*/, '').replace(/^ms_/, '');
-        const parts = cleaned.split('_');
+        const cleaned = target.replace(/_fkey.*/, '');
 
-        if (parts[parts.length - 1] === 'id') {
-          const lastThree = parts.slice(-3);
-          if (lastThree[0] === 'sub' && lastThree[1] === 'category') {
-            relation = 'Sub-category';
-          } else if (lastThree[0] === 'item' && lastThree[1] === 'modifier') {
-            relation = 'Item modifier';
-          } else if (lastThree[0] === 'bank' && lastThree[1] === 'type') {
-            relation = 'Bank type';
-          } else {
-            const word = parts[parts.length - 2];
-            relation = word ? word.charAt(0).toUpperCase() + word.slice(1) : 'relation';
-          }
+        // Dynamically get all table names from Prisma's model metadata
+        const tableNames = Object.values(Prisma.ModelName).map(modelName => {
+          const snake = modelName
+            .replace(/([A-Z])/g, '_$1')
+            .toLowerCase()
+            .replace(/^_/, '');
+          return `ms_${snake}`;
+        });
+
+        const matchedTable = tableNames.find(tableName => cleaned.startsWith(`${tableName}_`));
+
+        if (matchedTable) {
+          const relationField = cleaned
+            .replace(`${matchedTable}_`, '')
+            .replace(/_id$/, '');
+
+          relation = relationField
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
         } else {
-          relation = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+          const simpleClean = cleaned.replace(/^ms_/, '').replace(/_id$/, '');
+          relation = simpleClean
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
         }
 
         message = `Invalid relation: The referenced ${relation} does not exist.`;
