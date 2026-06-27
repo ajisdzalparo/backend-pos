@@ -91,38 +91,21 @@ export const ProductService = {
       name: query?.q ? { contains: query.q, mode: 'insensitive' as const } : undefined,
     };
 
-    return prisma.product.findMany({
+    const data = await prisma.product.findMany({
       where,
-      include: {
-        category: {
-          select: {
-            id: true,
-            name: true,
-          }
-        },
-        tax: {
-          select: {
-            id: true,
-            name: true,
-            rate: true,
-          }
-        },
-        sub_category: {
-          select: {
-            id: true,
-            name: true,
-          }
-        },
-        item_modifier: {
-          select: {
-            id: true,
-            name: true,
-            price: true,
-          }
-        }
-      },
       orderBy: { name: 'asc' }
     });
+
+    const result = data.map((item) => {
+      return {
+        id: item.id,
+        name: item.name,
+        sku: item.sku,
+        base_price: item.base_price,
+      }
+    })
+
+    return result;
   },
 
   getProductById: async (id: string): Promise<ProductResponseDto> => {
@@ -205,12 +188,6 @@ export const ProductService = {
     return prisma.product.update({
       where: { id },
       data: { is_active: !product.is_active },
-      include: {
-        category: true,
-        tax: true,
-        sub_category: true,
-        item_modifier: true,
-      }
     }) as unknown as Promise<ProductResponseDto>;
   },
 
