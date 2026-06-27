@@ -24,11 +24,8 @@ export const errorHandler = (
       case 'P2003': {
         const target = (err.meta?.target as string) || (err.meta?.field_name as string) || '';
         let relation = 'relation';
-        
-        // Clean up raw database constraint names like "ms_product_category_id_fkey (index)"
-        const cleaned = target.replace(/_fkey.*/, '');
 
-        // Dynamically get all table names from Prisma's model metadata
+        const cleaned = target.replace(/_fkey.*/, '');
         const tableNames = Object.values(Prisma.ModelName).map(modelName => {
           const snake = modelName
             .replace(/([A-Z])/g, '_$1')

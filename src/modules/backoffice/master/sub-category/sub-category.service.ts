@@ -2,9 +2,16 @@ import { prisma } from "../../../../config/database";
 import { SubCategoryCreateDto, SubCategoryResponseDto, SubCategoryListRequestDto, SubCategoryGetAllDto } from "./sub-category.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../../../../common/ApiError";
 
 export const SubCategoryService = {
   createSubCategory: async (data: SubCategoryCreateDto): Promise<SubCategoryResponseDto> => {
+    const existing = await prisma.subCategory.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
+    });
+    if (existing) {
+      throw new ApiError('Sub-category name already exists', 400);
+    }
     const subCategory = await prisma.subCategory.create({
       data,
       include: {

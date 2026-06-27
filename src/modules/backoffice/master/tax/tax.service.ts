@@ -2,9 +2,16 @@ import { prisma } from "../../../../config/database";
 import { TaxCreateDto, TaxResponseDto, TaxListRequestDto, TaxGetAllDto } from "./tax.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../../../../common/ApiError";
 
 export const TaxService = {
   createTax: async (data: TaxCreateDto): Promise<TaxResponseDto> => {
+    const existing = await prisma.tax.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
+    });
+    if (existing) {
+      throw new ApiError('Tax name already exists', 400);
+    }
     return prisma.tax.create({ data });
   },
 

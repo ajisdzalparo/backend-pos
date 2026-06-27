@@ -2,9 +2,16 @@ import { prisma } from "../../../../config/database";
 import { ItemModifierCreateDto, ItemModifierResponseDto, ItemModifierListRequestDto, ItemModifierGetAllDto } from "./item-modifier.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../../../../common/ApiError";
 
 export const ItemModifierService = {
   createItemModifier: async (data: ItemModifierCreateDto): Promise<ItemModifierResponseDto> => {
+    const existing = await prisma.itemModifier.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
+    });
+    if (existing) {
+      throw new ApiError('Item modifier name already exists', 400);
+    }
     const { product_ids, ...rest } = data;
     return prisma.itemModifier.create({
       data: {

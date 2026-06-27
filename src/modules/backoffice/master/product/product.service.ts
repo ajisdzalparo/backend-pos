@@ -2,9 +2,16 @@ import { prisma } from "../../../../config/database";
 import { ProductCreateDto, ProductResponseDto, ProductListRequestDto, ProductGetAllDto, ProductUpdateDto } from "./product.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../../../../common/ApiError";
 
 export const ProductService = {
   createProduct: async (data: ProductCreateDto): Promise<ProductResponseDto> => {
+    const existing = await prisma.product.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' } }
+    });
+    if (existing) {
+      throw new ApiError('Product name already exists', 400);
+    }
     return prisma.product.create({
       data,
       include: {
@@ -159,7 +166,16 @@ export const ProductService = {
   updateProduct: async (id: string, data: ProductUpdateDto): Promise<ProductResponseDto> => {
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
-      throw new Error('Product not found');
+      throw new ApiError('Product not found', 404);
+    }
+
+    if (data.name && data.name.toLowerCase() !== existing.name.toLowerCase()) {
+      const duplicate = await prisma.product.findFirst({
+        where: { name: { equals: data.name, mode: 'insensitive' } }
+      });
+      if (duplicate) {
+        throw new ApiError('Product name already exists', 400);
+      }
     }
 
     return prisma.product.update({

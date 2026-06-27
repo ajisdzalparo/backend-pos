@@ -2,9 +2,16 @@ import { prisma } from "../../../../config/database";
 import { CategoryCreateDto, CategoryResponseDto, CategoryListRequestDto, CategoryGetAllDto } from "./category.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
+import { ApiError } from "../../../../common/ApiError";
 
 export const CategoryService = {
   createCategory: async (data: CategoryCreateDto): Promise<CategoryResponseDto> => {
+    const existing = await prisma.category.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
+    });
+    if (existing) {
+      throw new ApiError('Category name already exists', 400);
+    }
     return prisma.category.create({ data });
   },
 
