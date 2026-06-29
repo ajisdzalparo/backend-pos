@@ -89,8 +89,8 @@ export const SubCategoryService = {
     const existing = await prisma.subCategory.findFirst({
       where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
     });
-    if (existing) {
-      throw new ApiError('Sub-category name already exists', 400);
+    if (!existing) {
+      throw new ApiError('Sub-category not found', 404);
     }
     const subCategory = await prisma.subCategory.update({
       where: { id },
