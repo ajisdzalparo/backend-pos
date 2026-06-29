@@ -26,6 +26,11 @@ export const TaxController = {
     return res.status(200).json(ApiUtils.createSuccess(result, 'All tax retrieved successfully'));
   }),
 
+  updateTax: asyncHandler(async (req: Request, res: Response) => {
+    const tax = await TaxService.updateTax(req.params.id, req.body);
+    return res.status(200).json(ApiUtils.createSuccess(tax, 'Tax updated successfully'));
+  }),
+
 	toggleStatus: asyncHandler(async (req: Request, res: Response) => {
 		const tax = await TaxService.toggleStatusTax(req.params.id);
 		return res.status(200).json(ApiUtils.createSuccess(tax, 'Tax status toggled successfully'));

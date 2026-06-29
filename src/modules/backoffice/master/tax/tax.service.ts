@@ -1,5 +1,5 @@
 import { prisma } from "../../../../config/database";
-import { TaxCreateDto, TaxResponseDto, TaxListRequestDto, TaxGetAllDto } from "./tax.types";
+import { TaxCreateDto, TaxResponseDto, TaxListRequestDto, TaxGetAllDto, TaxUpdateDto } from "./tax.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
 import { ApiError } from "../../../../common/ApiError";
@@ -52,6 +52,28 @@ export const TaxService = {
       }
     };
   },
+
+	updateTax: async (id: string, data: TaxUpdateDto): Promise<TaxResponseDto> => {
+		const tax = await prisma.tax.findUnique({
+			where: { id, deleted_at: null },
+		});
+		if (!tax) {
+			throw new Error('Tax not found');
+		}
+		return prisma.tax.update({
+			where: { id },
+			data,
+			select: {
+				id: true,
+				name: true,
+				rate: true,
+				is_active: true,
+				created_at: true,
+				updated_at: true,
+				deleted_at: true,
+			},
+		});
+	},
 
 	getAllTax: async (query?: TaxGetAllDto) => {
 		const where: Prisma.TaxWhereInput = query?.q

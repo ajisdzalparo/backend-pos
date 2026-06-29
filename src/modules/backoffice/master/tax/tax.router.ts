@@ -8,6 +8,7 @@ export function TaxRouter(): Router {
     router.get("/", TaxController.getTaxList);
     router.get("/all", TaxController.getAllTax);
 		router.get("/:id", TaxController.getTaxById);
+    router.put("/:id", TaxController.updateTax)
 		router.patch("/:id/status", TaxController.toggleStatus);
 		router.delete('/:id', TaxController.deleteTax)
 

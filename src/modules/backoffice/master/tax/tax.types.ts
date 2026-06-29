@@ -5,6 +5,8 @@ export interface TaxCreateDto {
   rate: number;
 }
 
+export interface TaxPayloadDto extends TaxCreateDto {}
+
 export interface TaxListRequestDto extends ApiListRequest {
 	is_active?: boolean
 }
