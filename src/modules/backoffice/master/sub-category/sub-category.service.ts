@@ -1,5 +1,5 @@
 import { prisma } from "../../../../config/database";
-import { SubCategoryCreateDto, SubCategoryResponseDto, SubCategoryListRequestDto, SubCategoryGetAllDto } from "./sub-category.types";
+import { SubCategoryCreateDto, SubCategoryResponseDto, SubCategoryListRequestDto, SubCategoryGetAllDto, SubCategoryUpdateDto } from "./sub-category.types";
 import { parseListRequest } from "../../../../common/ApiRequestParser";
 import { Prisma } from "@prisma/client";
 import { ApiError } from "../../../../common/ApiError";
@@ -82,6 +82,34 @@ export const SubCategoryService = {
         per_page: parsed.per_page,
         total,
       }
+    };
+  },
+
+  updateSubCategory: async (id: string, data: SubCategoryUpdateDto): Promise<SubCategoryResponseDto> => {
+    const existing = await prisma.subCategory.findFirst({
+      where: { name: { equals: data.name, mode: 'insensitive' }, deleted_at: null }
+    });
+    if (existing) {
+      throw new ApiError('Sub-category name already exists', 400);
+    }
+    const subCategory = await prisma.subCategory.update({
+      where: { id },
+      data,
+      include: {
+        category: true,
+      }
+    });
+
+    return {
+      id: subCategory.id,
+      name: subCategory.name,
+      description: subCategory.description,
+      category_id: subCategory.category_id,
+      category_name: subCategory.category.name,
+      is_active: subCategory.is_active,
+      created_at: subCategory.created_at,
+      updated_at: subCategory.updated_at,
+      deleted_at: subCategory.deleted_at,
     };
   },
 

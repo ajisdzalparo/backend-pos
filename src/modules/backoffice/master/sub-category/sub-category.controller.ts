@@ -9,6 +9,11 @@ export const SubCategoryController = {
     return res.status(201).json(ApiUtils.createSuccess(subCategory, 'Sub-category created successfully'));
   }),
 
+  updateSubCategory: asyncHandler(async (req: Request, res: Response) => {
+    const subCategory = await SubCategoryService.updateSubCategory(req.params.id, req.body);
+    return res.status(200).json(ApiUtils.createSuccess(subCategory, 'Sub-category updated successfully'));
+  }),
+
   getListSubCategory: asyncHandler(async (req: Request, res: Response) => {
     const result = await SubCategoryService.getListSubCategory(req.query as any);
     return res.status(200).json(ApiUtils.createSuccess(result.list, 'List Sub-category retrieved successfully', result.meta));

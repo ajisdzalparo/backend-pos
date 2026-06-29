@@ -10,10 +10,8 @@ export interface SubCategoryListRequestDto extends ApiListRequest {
 	is_active?: boolean
 }
 
-export interface SubCategoryUpdateDto {
-  name?: string;
-  category_id: string
-  description?: string;
+export interface SubCategoryUpdateDto extends Partial<SubCategoryCreateDto> {
+  id?: string;
 }
 
 export interface SubCategoryGetAllDto {
