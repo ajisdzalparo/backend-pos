@@ -8,6 +8,7 @@ export function SubCategoryRouter(): Router {
     router.get("/", SubCategoryController.getListSubCategory);
     router.get("/all", SubCategoryController.getAllSubCategory);
     router.get("/:id", SubCategoryController.getSubCategoryById);
+    router.put("/:id", SubCategoryController.updateSubCategory);
     router.patch("/:id/status", SubCategoryController.toggleStatusSubCategory);
     router.delete('/:id', SubCategoryController.deleteSubCategory)
 
