@@ -39,7 +39,7 @@ export const SubCategoryService = {
       : query.is_active;
 
     const where: Prisma.SubCategoryWhereInput = {
-      is_active: isActive || true,
+      is_active: isActive !== undefined ? isActive : undefined,
       name: parsed.q ? { contains: parsed.q, mode: 'insensitive' as const } : undefined,
       deleted_at: null,
     };

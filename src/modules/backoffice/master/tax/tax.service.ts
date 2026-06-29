@@ -22,7 +22,7 @@ export const TaxService = {
       : query.is_active;
 
     const where: Prisma.TaxWhereInput = {
-      is_active: isActive || true,
+      is_active: isActive !== undefined ? isActive : undefined,
       name: parsed.q ? { contains: parsed.q, mode: 'insensitive' as const } : undefined,
       deleted_at: null,
     };
@@ -112,7 +112,7 @@ export const TaxService = {
 
 	toggleStatusTax: async (id: string): Promise<TaxResponseDto> => {
     const tax = await prisma.tax.findUnique({
-			where: { id, is_active: true },
+			where: { id, deleted_at: null },
 			select: {
 				id: true,
 				name: true,
